@@ -1,37 +1,48 @@
 import React, { Component } from 'react';
-import {getData} from '../actions/actionCreators';
 
-import { StyleSheet, Text, ScrollView, Navigator} from 'react-native';
+import { StyleSheet, 
+         ScrollView, 
+         View, 
+         Navigator} from 'react-native';
 
 import Gallery from './Gallery'; 
+import Single from './Single'; 
+
+import {getData} from '../actions/actionCreators';
+
 class Main extends Component {
 
-  componentDidMount(){
+  componentWillMount(){
     const url = 'https://api.500px.com/v1/photos?feature=popular&consumer_key=wB4ozJxTijCwNuggJvPGtBGCRqaZVcF6jsrzUadF';
     
     fetch(url)
       .then(response => response.json())
-      .then(responseJson => {getData(responseJson.photos); console.log('data',this.props.data)} )
+      .then(responseJson => getData(responseJson.photos))
       .catch( error => console.error(error));
   }
-    
+
   render() {
-    return (
-      <Navigator
-      	initialRoute={this.props.navigationState}
-      	renderScene={ (route, navigator) => {
-        	return (<Gallery {...this.props} 
-        					title={route.title} 
-        					navigator={navigator}
-        			/>)
-      	} }
-    />
-    );
+    return ( <Navigator 
+                   data = {this.props.data}
+                   id = {this.props.imageId}
+                   initialRoute={this.props.navigationState}
+                   renderScene={this.navigatorRenderScene} /> );
+  }
+
+  navigatorRenderScene(route, navigator) {
+    _navigator = navigator;
+    
+    const data = this.data ? this.data : null;
+    const imId = this.id;
+    
+    switch (route.id) {
+      case 'gallery':
+        return (<ScrollView ><Gallery navigator={navigator} title="gallery"  data={data} /></ScrollView> );
+      case 'single':
+        return (<View style={{flex:1}}><Single navigator={navigator} title="single" data={data} id={imId}/></View>);
+    }
   }
 }
 
 export default Main;
-//{React.cloneElement({...this.props}.children, {...this.props})}
-// <ScrollView >
-//         <Gallery {...this.props}/>
-//       </ScrollView>
+

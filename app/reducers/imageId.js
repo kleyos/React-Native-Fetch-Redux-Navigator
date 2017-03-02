@@ -4,7 +4,7 @@ function setImageId(state='', action){
 		case 'GO_TO_SINGLE':
 			
 			const newState = action.id;
-			console.log('newState', newState);
+			console.log('newState imageId', newState);
 
 			return newState;
 		default:
